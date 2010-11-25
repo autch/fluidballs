@@ -5,7 +5,7 @@
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:debuggable="true">
 		<activity android:label="@string/app_name" android:name=".BounceTest"
-			android:screenOrientation="portrait">
+			android:screenOrientation="nosensor">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

@@ -2,7 +2,9 @@
 #include "FluidBalls.h"
 #include "net_autch_android_bouncetest_FluidBallsThread.h"
 
-FluidBalls* pInstance;
+FluidBalls* pInstance = NULL;
+jmethodID methodID = 0;
+jclass klass = 0;
 
 /*
  * Class:     net_autch_android_bouncetest_FluidBallsThread
@@ -13,6 +15,8 @@ JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidb
   (JNIEnv* env, jobject self, jint count, jint width, jint height)
 {
 	pInstance = new FluidBalls(count, width, height);
+	klass = (jclass)env->NewGlobalRef(env->GetObjectClass(self));
+	methodID = env->GetMethodID(klass, "drawBall", "(FFF)V");
 }
 
 /*
@@ -24,6 +28,9 @@ JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidb
   (JNIEnv* env, jobject self)
 {
 	delete pInstance;
+	env->DeleteGlobalRef(klass);
+	klass = 0;
+	methodID = 0;
 	pInstance = NULL;
 }
 
@@ -35,6 +42,7 @@ JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidb
 JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidballs_1setaccel
   (JNIEnv* env, jobject self, jfloat ax, jfloat ay)
 {
+	if(!pInstance) return;
 	pInstance->setAccel(ax, ay);
 }
 
@@ -46,11 +54,7 @@ JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidb
 JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidballs_1drawballs
   (JNIEnv* env, jobject self)
 {
-	jmethodID methodID;
-	jclass klass;
-
-	klass = env->GetObjectClass(self);
-	methodID = env->GetMethodID(klass, "drawBall", "(FFF)V");
+	if(!pInstance || !klass || !methodID) return;
 
 	int count = pInstance->getCount();
 	for(int i = 0; i < count; i++)
@@ -68,6 +72,7 @@ JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidb
 JNIEXPORT void JNICALL Java_net_autch_android_bouncetest_FluidBallsThread_fluidballs_1update
   (JNIEnv* env, jobject self)
 {
+	if(!pInstance) return;
 	pInstance->update_balls();
 }
 
