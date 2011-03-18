@@ -134,11 +134,11 @@ public:
 		if (accx < -1.0 || accx > 1.0)
 			accx = 0;
 
-		accy = 0.01; // Gravity
+		accy = 0.0075; // Gravity
 		if (accy < -1.0 || accy > 1.0)
 			accy = 0.01;
 
-		e = 0.90; // Elasticity
+		e = 0.95; // Elasticity
 		if (e < 0.2 || e > 1.0)
 			e = 0.95;
 
